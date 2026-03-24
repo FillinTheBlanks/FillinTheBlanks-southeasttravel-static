@@ -33,7 +33,15 @@ wget \
   --tries=3 \
   --quiet \
   --show-progress \
-  "${SITE_URL}" || true
+  "${SITE_URL}"
+WGET_EXIT=$?
+# Exit code 8 means the server returned an error response for some URLs (e.g. 404s
+# on a live site) — that is acceptable during a recursive mirror.  Any other
+# non-zero code indicates a genuine failure (network, auth, I/O) and should abort.
+if [ "${WGET_EXIT}" -ne 0 ] && [ "${WGET_EXIT}" -ne 8 ]; then
+  echo "ERROR: wget exited with code ${WGET_EXIT}" >&2
+  exit "${WGET_EXIT}"
+fi
 
 echo "==> Creating .nojekyll"
 touch "${OUTPUT_DIR}/.nojekyll"
