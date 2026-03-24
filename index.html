@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Southeast Travel — Static Mirror</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.1);
+      max-width: 640px;
+      width: 100%;
+      padding: 2.5rem 3rem;
+      text-align: center;
+    }
+    .logo { font-size: 2.4rem; margin-bottom: .4rem; }
+    h1 { font-size: 1.6rem; color: #1a5276; margin-bottom: .5rem; }
+    .subtitle { color: #666; margin-bottom: 1.8rem; font-size: .95rem; }
+    .badge {
+      display: inline-block;
+      background: #eaf4fb;
+      color: #1a5276;
+      border: 1px solid #aed6f1;
+      border-radius: 20px;
+      padding: .3rem .9rem;
+      font-size: .8rem;
+      margin-bottom: 2rem;
+    }
+    .info-block {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 8px;
+      padding: 1.2rem 1.5rem;
+      text-align: left;
+      margin-bottom: 1.8rem;
+      font-size: .9rem;
+      line-height: 1.7;
+    }
+    .info-block strong { color: #b7770d; }
+    .steps { text-align: left; margin-bottom: 1.8rem; }
+    .steps h2 { font-size: 1rem; color: #555; margin-bottom: .6rem; text-transform: uppercase; letter-spacing: .05em; }
+    .steps ol { padding-left: 1.3rem; line-height: 2; font-size: .9rem; color: #444; }
+    code {
+      background: #f0f4f8;
+      border-radius: 4px;
+      padding: .15em .4em;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: .85em;
+      color: #c0392b;
+    }
+    a { color: #1a5276; }
+    .footer { margin-top: 2rem; font-size: .8rem; color: #aaa; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">✈️</div>
+    <h1>Southeast Travel</h1>
+    <p class="subtitle">southeasttravel.com.ph — Static Mirror</p>
+    <span class="badge">Static Site · GitHub Pages</span>
+
+    <div class="info-block">
+      <strong>⚠️ Mirror not yet populated.</strong><br />
+      This repository contains the mirroring script but the site content
+      has not been downloaded yet. Run the mirror script (see below) on a
+      machine with internet access to populate the static files, then
+      commit and push the result.
+    </div>
+
+    <div class="steps">
+      <h2>How to generate this mirror</h2>
+      <ol>
+        <li>Install dependencies:<br /><code>pip install requests beautifulsoup4 tqdm</code></li>
+        <li>Run from the repository root:<br /><code>python3 scripts/mirror.py</code></li>
+        <li>Serve locally to verify:<br /><code>python3 -m http.server 8080</code></li>
+        <li>Commit &amp; push all generated files.</li>
+      </ol>
+    </div>
+
+    <p style="font-size:.9rem; color:#555;">
+      See <a href="README.md">README.md</a> for full documentation and
+      <a href="scripts/mirror.py">scripts/mirror.py</a> for the mirror
+      implementation.
+    </p>
+
+    <p class="footer">
+      Mirror repository:
+      <a href="https://github.com/FillinTheBlanks/FillinTheBlanks-southeasttravel-static">
+        FillinTheBlanks/FillinTheBlanks-southeasttravel-static
+      </a>
+    </p>
+  </div>
+</body>
+</html>
