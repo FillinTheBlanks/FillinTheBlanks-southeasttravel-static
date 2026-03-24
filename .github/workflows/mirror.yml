@@ -1,0 +1,67 @@
+name: Mirror southeasttravel.com.ph
+
+on:
+  # Run automatically every day at 02:00 UTC
+  schedule:
+    - cron: "0 2 * * *"
+  # Allow manual trigger from the Actions tab
+  workflow_dispatch:
+    inputs:
+      delay:
+        description: "Seconds between requests (default: 0.5)"
+        required: false
+        default: "0.5"
+      max_depth:
+        description: "Maximum crawl depth (default: 10)"
+        required: false
+        default: "10"
+      no_robots:
+        description: "Ignore robots.txt? (true/false)"
+        required: false
+        default: "false"
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to commit mirrored files back
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 tqdm
+
+      - name: Run mirror script
+        run: |
+          ARGS="--resume --delay ${{ github.event.inputs.delay || '0.5' }} --max-depth ${{ github.event.inputs.max_depth || '10' }}"
+          if [ "${{ github.event.inputs.no_robots }}" = "true" ]; then
+            ARGS="$ARGS --no-robots"
+          fi
+          python3 scripts/mirror.py $ARGS
+
+      - name: Update last-mirrored date in README
+        run: |
+          TODAY=$(date -u +"%Y-%m-%d")
+          sed -i "s/| \*\*Last mirrored\*\* | .* |/| **Last mirrored** | $TODAY |/" README.md
+
+      - name: Commit and push mirrored files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          # Only commit if there are actual changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit — mirror is already up to date."
+          else
+            git commit -m "chore: mirror update $(date -u +"%Y-%m-%d %H:%M UTC")"
+            git push
+          fi
