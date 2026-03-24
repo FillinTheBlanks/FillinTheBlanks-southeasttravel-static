@@ -1,0 +1,58 @@
+name: Mirror southeasttravel.com.ph
+
+on:
+  workflow_dispatch:
+  # Uncomment to run on a schedule (weekly on Sunday at 02:00 UTC):
+  # schedule:
+  #   - cron: '0 2 * * 0'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install wget
+        run: sudo apt-get update -qq && sudo apt-get install -y wget
+
+      - name: Run mirror script
+        run: bash scripts/mirror.sh
+
+      - name: Check for changes in docs/
+        id: diff
+        run: |
+          git add docs/
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Get current date
+        id: date
+        run: echo "today=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Open PR with updated mirror
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: mirror/update-${{ steps.date.outputs.today }}
+          base: main
+          commit-message: "chore: update static mirror (${{ steps.date.outputs.today }})"
+          title: "Update static mirror (${{ steps.date.outputs.today }})"
+          body: |
+            Automated update of the static mirror of https://southeasttravel.com.ph.
+
+            Triggered by: `${{ github.event_name }}`
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          labels: automated,mirror
+          delete-branch: true
